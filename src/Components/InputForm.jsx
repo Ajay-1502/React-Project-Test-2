@@ -1,9 +1,12 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
+import DisplayDetails from './DisplayDetails';
+import './Style.css';
 
 const InputForm = () => {
   const [name, setName] = useState('');
   const [mobile, setMobile] = useState('');
   const [address, setAddress] = useState('');
+  const [editingId, setEditingId] = useState(null);
   const [studentDetails, setStudentDetails] = useState([]);
 
   const formSubmitHandler = (event) => {
@@ -20,9 +23,11 @@ const InputForm = () => {
     setName('');
     setMobile('');
     setAddress('');
+    setEditingId(null);
   };
 
   const editButtonHandler = (student) => {
+    setEditingId(student.id);
     setName(student.name);
     setMobile(student.mobile);
     setAddress(student.address);
@@ -38,53 +43,46 @@ const InputForm = () => {
   };
 
   return (
-    <div>
-      <h1>Students Manager</h1>
-      <h2>Total Students :{studentDetails.length}</h2>
-
-      <form onSubmit={formSubmitHandler}>
-        <label htmlFor="name">Name :</label>
-        <input
-          id="name"
-          type="text"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          required
-        />
-        <label htmlFor="mbl">Mobile :</label>
-        <input
-          id="mbl"
-          type="tel"
-          value={mobile}
-          onChange={(e) => setMobile(e.target.value)}
-          required
-        />
-        <label htmlFor="address">Address :</label>
-        <input
-          id="address"
-          type="text"
-          value={address}
-          onChange={(e) => setAddress(e.target.value)}
-          required
-        />
-        <button type="submit">Add</button>
-      </form>
-
-      <div>
-        <h2>All Students</h2>
-        {studentDetails.map((student) => {
-          return (
-            <li key={student.id}>
-              {student.name} {student.mobile} {student.address}
-              <button onClick={() => editButtonHandler(student)}>Edit</button>
-              <button onClick={() => deleteButtonHandler(student)}>
-                Delete
-              </button>
-            </li>
-          );
-        })}
+    <>
+      <h1>Students Details Manager</h1>
+      <h2>Total Students : {studentDetails.length}</h2>
+      <div className="form-container">
+        <form onSubmit={formSubmitHandler}>
+          <label htmlFor="name">Name :</label>
+          <input
+            id="name"
+            type="text"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            required
+          />
+          <label htmlFor="mbl">Mobile :</label>
+          <input
+            id="mbl"
+            type="tel"
+            value={mobile}
+            onChange={(e) => setMobile(e.target.value)}
+            maxLength={10}
+            minLength={10}
+            required
+          />
+          <label htmlFor="address">Address :</label>
+          <input
+            id="address"
+            type="text"
+            value={address}
+            onChange={(e) => setAddress(e.target.value)}
+            required
+          />
+          <button type="submit">{editingId ? 'Update' : 'Add'}</button>
+        </form>
       </div>
-    </div>
+      <DisplayDetails
+        studentDetails={studentDetails}
+        editButtonHandler={editButtonHandler}
+        deleteButtonHandler={deleteButtonHandler}
+      />
+    </>
   );
 };
 
